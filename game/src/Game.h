@@ -2,7 +2,15 @@
 
 #include <memory>
 
-class Camera3D;
+struct Camera3D;
+
+namespace GameProperties
+{
+	inline constexpr int WINDOW_WIDTH {1000};
+	inline constexpr int WINDOW_HEIGHT {1000};
+
+	inline constexpr float FOV {45.f};
+};
 
 class Game
 {
