@@ -1,10 +1,12 @@
 #include <vector>
+#include <memory>
 
 #include "Game.h"
 #include "raylib.h"
 #include "Enviornment.h"
+#include "Player.h"
 
-Game::Game() : m_Camera {std::make_unique<Camera3D>(Camera3D{{0.f, 10.f, 10.f}, VectorConstants::ZERO_VECTOR, VectorConstants::UP_VECTOR, GameProperties::FOV, CAMERA_PERSPECTIVE})}
+Game::Game()
 {
 	InitWindow(GameProperties::WINDOW_WIDTH, GameProperties::WINDOW_HEIGHT, "Grappling Hook Gun");
 
@@ -18,36 +20,34 @@ Game::~Game()
 
 void Game::GameLoop() const
 {
-	std::vector<std::unique_ptr<IGameBase>> gameObjects {};
+	std::vector<std::shared_ptr<IGameBase>> gameObjects {};
+	
+	gameObjects.push_back(std::make_shared<Player>());
+	gameObjects.push_back(std::make_shared<Environment>());
 
-	gameObjects.push_back(std::make_unique<Environment>());
 
-	while (!WindowShouldClose())
+	if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})
 	{
-		BeginDrawing();
-
-		ClearBackground(WHITE);
-
-		if (m_Camera)
-		{ 
-			BeginMode3D(*m_Camera);
-
+		Camera cam {player->Camera()};
+	
+		while (!WindowShouldClose())
+		{
+			BeginDrawing();
+	
+			ClearBackground(WHITE);
+	
+			BeginMode3D(player->Camera());
+	
 			for (int i {0}; i < gameObjects.size(); ++i)
 			{
 				gameObjects[i]->Update();
 			}
-
+	
 			EndMode3D();
+	
+			DrawFPS(0, 0);
+	
+			EndDrawing();
 		}
-		else
-		{
-			constexpr int FONT_SIZE {10};
-
-			DrawText("Camera Creation Failed", GameProperties::WINDOW_WIDTH / 2, GameProperties::WINDOW_HEIGHT / 2, FONT_SIZE, BLACK); 
-		}
-
-		DrawFPS(0, 0);
-
-		EndDrawing();
 	}
 }
