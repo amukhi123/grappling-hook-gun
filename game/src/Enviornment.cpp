@@ -10,7 +10,6 @@ Environment::~Environment()
 	UnloadImage(m_MapImage);
 	UnloadTexture(m_MapTexure);
 	UnloadTexture(m_CubeTexture);
-	UnloadMesh(m_MapMesh);
 	UnloadModel(m_MapModel);
 }
 
