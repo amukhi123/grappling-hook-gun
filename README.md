@@ -7,8 +7,7 @@ In this project, I create a grappling hook gun. The player is able to left-click
 ## Controls
 
 WASD -> Movement
-<br>Mouse -> Looking
-<br>F -> Enable debug mode (visual)
+<br>Arrow Keys -> Rotation
 
 ## Gallery
 
@@ -23,7 +22,7 @@ Coming soon.
 
 ## Gallery
 
-Coming soon.
+![Gameplay](gallery/gameplay.gif)
 
 ## Tech Stack
 
