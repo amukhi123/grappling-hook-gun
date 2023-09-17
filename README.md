@@ -11,7 +11,7 @@ WASD -> Movement
 
 ## Gallery
 
-Coming soon.
+![Gameplay](gallery/gameplay.gif)
 
 ## How to Run
 
@@ -19,10 +19,6 @@ Coming soon.
 2. Launch premake-VisualStudio.bat
 3. Click on the solution file that was generated (grappling-hook-gun.sln, or parent-directory-name.sln)
 4. Build and run project
-
-## Gallery
-
-![Gameplay](gallery/gameplay.gif)
 
 ## Tech Stack
 
