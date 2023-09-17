@@ -7,8 +7,8 @@ In this project, I create a grappling hook gun. The player is able to left-click
 ## Controls
 
 WASD -> Movement
-Mouse -> Looking
-F -> Enable debug mode (visual)
+<br>Mouse -> Looking
+<br>F -> Enable debug mode (visual)
 
 ## Gallery
 
