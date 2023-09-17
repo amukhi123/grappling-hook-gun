@@ -4,6 +4,16 @@
 
 In this project, I create a grappling hook gun. The player is able to left-click and deploy the grappling hook and swing around until disengaging using the right-click. The grappling hook slowly moves the player in the direction of where the grappling hook landed.
 
+## Controls
+
+WASD -> Movement
+Mouse -> Looking
+F -> Enable debug mode (visual)
+
+## Gallery
+
+Coming soon.
+
 ## How to Run
 
 1. Clone the repository
