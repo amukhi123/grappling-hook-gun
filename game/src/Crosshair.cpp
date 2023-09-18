@@ -6,8 +6,8 @@ Crosshair::Crosshair() : IUserInterfaceBase("resources/Crosshair.png")
 
 void Crosshair::Update()
 {
-	constexpr float CROSSHAIR_ALPHA {0.5f};
-	const Texture crosshair {UserInterfaceTexture()};
+	constexpr float CROSSHAIR_ALPHA {1.f};
+	const Texture crosshairTexture {UserInterfaceTexture()};
 
-	DrawTexture(crosshair, GetScreenWidth() / 2 - crosshair.width / 2, GetScreenHeight() / 2 - crosshair.height / 2, ColorAlpha(WHITE, CROSSHAIR_ALPHA));
+	DrawTexture(crosshairTexture, GetScreenWidth() / 2 - crosshairTexture.width / 2, GetScreenHeight() / 2 - crosshairTexture.height / 2, ColorAlpha(WHITE, CROSSHAIR_ALPHA));
 }
