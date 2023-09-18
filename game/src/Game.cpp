@@ -5,6 +5,8 @@
 #include "raylib.h"
 #include "Enviornment.h"
 #include "Player.h"
+#include "IBase.h"
+#include "Crosshair.h"
 
 Game::Game()
 {
@@ -20,10 +22,11 @@ Game::~Game()
 
 void Game::GameLoop() const
 {
-	std::vector<std::shared_ptr<IGameBase>> gameObjects {};
+	std::vector<std::shared_ptr<IBase>> gameObjects {};
 	
 	gameObjects.push_back(std::make_shared<Player>());
 	gameObjects.push_back(std::make_shared<Environment>());
+	gameObjects.push_back(std::make_shared<Crosshair>());
 
 
 	if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})

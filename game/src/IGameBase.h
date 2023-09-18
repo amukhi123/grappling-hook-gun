@@ -1,15 +1,14 @@
 #pragma once
 
-#include "raylib.h"
+#include "IBase.h"
 #include "raymath.h"
 
 namespace VectorConstants
 {
+	// Remove and use built in UP function
 	inline constexpr Vector3 UP_VECTOR {0.f, 1.f, 0.f}; 
 };
 
-class IGameBase
+class IGameBase : public IBase
 {
-public:
-	virtual void Update() = 0;
 };
