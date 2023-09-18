@@ -10,7 +10,10 @@
 
 Game::Game()
 {
-	InitWindow(GameProperties::WINDOW_WIDTH, GameProperties::WINDOW_HEIGHT, "Grappling Hook Gun");
+	constexpr int WINDOW_WIDTH {1000};
+	constexpr int WINDOW_HEIGHT {1000};
+
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Grappling Hook Gun");
 
 	DisableCursor();
 }
