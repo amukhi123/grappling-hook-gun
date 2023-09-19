@@ -19,6 +19,7 @@ void Environment::Update()
 {
 	GenerateMap();
 	CheckCollisions(Vector3Zero());
+	CheckDebugActions();
 }
 
 void Environment::GenerateMap()
@@ -104,8 +105,6 @@ bool Environment::CheckCollisions(const Vector3& PlayerPosition)
 {
 	const BoundingBox playerBoundingBox {};
 
-	for (const BoundingBox& bb : m_BoundingBoxes) 
-		DrawBoundingBox(bb, RED);
 
 	return false;
 }
@@ -115,5 +114,13 @@ void Environment::AddBoundingBox(const Vector3& MinBoundingBoxPosition, const Ve
 	if (!m_IsFinishedGeneratingBoundingBoxes)
 	{
 		m_BoundingBoxes.push_back({MinBoundingBoxPosition, MaxBoundingBoxPosition});
+	}
+}
+
+void Environment::DebugActions()
+{
+	for (const BoundingBox& boundingBox : m_BoundingBoxes) 
+	{
+		DrawBoundingBox(boundingBox, DebugProperties::DEBUG_COLOUR);
 	}
 }

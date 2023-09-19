@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "IGameBase.h"
+#include "Debug.h"
 
 namespace EnvironmentProperties
 {
@@ -10,7 +11,7 @@ namespace EnvironmentProperties
 	inline constexpr int MAP_HEIGHT {2};
 }
 
-class Environment : public IGameBase
+class Environment : public IGameBase, public Debug
 {
 public:
 	Environment();
@@ -45,4 +46,6 @@ private:
 	bool CompareColour(const Color& LeftColour, const Color& RightColour) const;
 
 	void AddBoundingBox(const Vector3& MinBoundingBoxPosition, const Vector3& MaxBoundingBoxPosition);
+
+	void DebugActions() override;
 };
