@@ -1,6 +1,6 @@
 #include "Enviornment.h"
 
-Environment::Environment() : m_WallCubeModel {LoadModel("resources/Cube.obj")}, m_GroundCubeModel {LoadModel("resources/Cube.obj")}, m_WallCubeTexture {LoadTexture("resources/WallCubeTexture.png")}, m_GroundCubeTexture {LoadTexture("resources/GroundCubeTexture.png")}, m_MapImage {LoadImage("resources/Map.png")}, m_MapSize {static_cast<float>(m_MapImage.width), static_cast<float>(m_MapImage.height)}, m_CubeSize {2.f, 2.f} 
+Environment::Environment() : m_WallCubeModel {LoadModel("resources/Cube.obj")}, m_GroundCubeModel {LoadModel("resources/Cube.obj")}, m_WallCubeTexture {LoadTexture("resources/WallCubeTexture.png")}, m_GroundCubeTexture {LoadTexture("resources/GroundCubeTexture.png")}, m_MapImage {LoadImage("resources/Map.png")}, m_MapSize {static_cast<float>(m_MapImage.width), static_cast<float>(m_MapImage.height)}, m_CubeSize {2.f, 2.f}, m_BoundingBoxes {}, m_IsFinishedGeneratingBoundingBoxes {false}
 {
 	m_WallCubeModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_WallCubeTexture; 
 	m_GroundCubeModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_GroundCubeTexture; 
@@ -17,17 +17,17 @@ Environment::~Environment()
 
 void Environment::Update()
 {
-	CreateMap();
+	GenerateMap();
+	CheckCollisions(Vector3Zero());
 }
 
-void Environment::CreateMap()
+void Environment::GenerateMap()
 {
 	constexpr Color GROUND_COLOUR {BLACK};
 	constexpr Color WALL_COLOUR {WHITE};
 
 	const Vector2 mapSize {MapSize()};
 	const Vector2 cubeSize {CubeSize()};
-
 
 	for (int x {0}; x < mapSize.x; ++x)
 	{
@@ -40,22 +40,47 @@ void Environment::CreateMap()
 				const float placementLength {x * cubeSize.x};
 				const float placementWidth {y * cubeSize.x};
 
-				DrawModel(m_GroundCubeModel, {placementLength, 0.f, placementWidth}, 1.f, WHITE);		
+				const Vector3 groundCubePosition {placementLength, 0.f, placementWidth};
 
-				const float roofPlacementHeight {cubeSize.y * 3};
+				DrawModel(m_GroundCubeModel, groundCubePosition, 1.f, WHITE);
 
-				DrawModel(m_WallCubeModel, {placementLength, roofPlacementHeight, placementWidth}, 1.f, WHITE);		
+				const Vector3 cubeTopRightPosition {cubeSize.x, cubeSize.y, cubeSize.x};
+				const Vector3 halfCubeSize {cubeSize.x / 2, cubeSize.y / 2, cubeSize.x / 2};
+				const Vector3 groundCubeBottomLeftPosition {Vector3Subtract(groundCubePosition, halfCubeSize)};
+
+				AddBoundingBox(groundCubeBottomLeftPosition, Vector3Add(groundCubeBottomLeftPosition, cubeTopRightPosition));
+
+				const float roofPlacementHeight {cubeSize.y * (EnvironmentProperties::MAP_HEIGHT + 1)};
+
+				const Vector3 roofCubePosition {placementLength, roofPlacementHeight, placementWidth};
+
+				DrawModel(m_WallCubeModel, roofCubePosition, 1.f, WHITE);		
+				const Vector3 roofBottomLeftPosition {Vector3Subtract(roofCubePosition, halfCubeSize)};
+
+				AddBoundingBox(roofBottomLeftPosition, Vector3Add(roofBottomLeftPosition, cubeTopRightPosition));
 
 				if (CompareColour(cellColour, WALL_COLOUR))
 				{
-					DrawModel(m_WallCubeModel, {placementLength, roofPlacementHeight - cubeSize.y, placementWidth}, 1.f, WHITE);
+					for (int y {0}; y < EnvironmentProperties::MAP_HEIGHT; ++y)
+					{
+						const float wallCubeHeightPosition {roofPlacementHeight - cubeSize.y * (y + 1)};
 
-					const float groundPlacementHeight {roofPlacementHeight - cubeSize.y * 2};
+						const Vector3 wallCubePosition {placementLength, wallCubeHeightPosition, placementWidth};
 
-					DrawModel(m_WallCubeModel, {placementLength, groundPlacementHeight, placementWidth}, 1.f, WHITE);
+						DrawModel(m_WallCubeModel, wallCubePosition, 1.f, WHITE);
+
+						const Vector3 wallCubeBottomLeftPosition {Vector3Subtract(wallCubePosition, halfCubeSize)};
+
+						AddBoundingBox(wallCubeBottomLeftPosition, Vector3Add(wallCubeBottomLeftPosition, cubeTopRightPosition));
+					}
 				}
 			}
 		}
+	}
+
+	if (!m_IsFinishedGeneratingBoundingBoxes)
+	{
+		m_IsFinishedGeneratingBoundingBoxes = true;
 	}
 }
 
@@ -72,4 +97,23 @@ Vector2 Environment::MapSize() const
 Vector2 Environment::CubeSize() const
 {
 	return m_CubeSize;
+}
+
+// Just for debugging purposing until a future commit
+bool Environment::CheckCollisions(const Vector3& PlayerPosition)
+{
+	const BoundingBox playerBoundingBox {};
+
+	for (const BoundingBox& bb : m_BoundingBoxes) 
+		DrawBoundingBox(bb, RED);
+
+	return false;
+}
+
+void Environment::AddBoundingBox(const Vector3& MinBoundingBoxPosition, const Vector3& MaxBoundingBoxPosition)
+{
+	if (!m_IsFinishedGeneratingBoundingBoxes)
+	{
+		m_BoundingBoxes.push_back({MinBoundingBoxPosition, MaxBoundingBoxPosition});
+	}
 }
