@@ -11,15 +11,23 @@ public:
 
 	void Update() override;
 
+	Vector2 MapSize() const;
+
+	Vector2 CubeSize() const;
+
 private:
+	Model m_WallCubeModel {};
+	Model m_GroundCubeModel {};
+
+	Texture m_WallCubeTexture {};
+	Texture m_GroundCubeTexture {};
+
 	Image m_MapImage {};
 
-	Texture m_MapTexure {};
-	Texture m_CubeTexture {};
+	Vector2 m_MapSize {};
+	Vector2 m_CubeSize {};
 
-	Mesh m_MapMesh {};
+	void CreateMap();
 
-	Model m_MapModel {};
-
-	Vector3 m_MapPosition {};
+	bool CompareColour(const Color& LeftColour, const Color& RightColour) const;
 };

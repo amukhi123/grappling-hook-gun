@@ -21,8 +21,6 @@ public:
 	Camera3D& Camera();
 
 private:
-	Vector3 m_PlayerPosition {};
-
 	Camera3D m_Camera {};
 
 	Vector3 Movement() const;
