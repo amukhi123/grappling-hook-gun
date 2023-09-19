@@ -4,7 +4,8 @@ namespace GameProperties
 {
 	enum class GameObjects : int
 	{
-		Player = 0
+		Environment = 0,
+		Player = 1
 	};
 };
 

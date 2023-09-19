@@ -26,41 +26,45 @@ Game::~Game()
 void Game::GameLoop() const
 {
 	std::vector<std::shared_ptr<IBase>> gameObjects {};
-	std::vector<std::shared_ptr<IBase>> userInterfaceObjects {};
 	
-	gameObjects.push_back(std::make_shared<Player>());
 	gameObjects.push_back(std::make_shared<Environment>());
 
-	userInterfaceObjects.push_back(std::make_shared<Crosshair>());
-
-	if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})
+	if (std::shared_ptr<Environment> environment {std::dynamic_pointer_cast<Environment>(gameObjects[static_cast<int>(GameProperties::GameObjects::Environment)])})
 	{
-		Camera cam {player->Camera()};
+		gameObjects.push_back(std::make_shared<Player>(environment->MapSize(), environment->CubeSize()));
 	
-		while (!WindowShouldClose())
+		std::vector<std::shared_ptr<IBase>> userInterfaceObjects {};
+	
+		userInterfaceObjects.push_back(std::make_shared<Crosshair>());
+	
+		if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})
 		{
-			BeginDrawing();
-	
-			ClearBackground(WHITE);
-	
-
-			BeginMode3D(player->Camera());
-	
-			for (int i {0}; i < gameObjects.size(); ++i)
+			Camera cam {player->Camera()};
+		
+			while (!WindowShouldClose())
 			{
-				gameObjects[i]->Update();
-			}
-
-			EndMode3D();
-
-			for (int i {0}; i < userInterfaceObjects.size(); ++i)
-			{
-				userInterfaceObjects[i]->Update();
-			}
-
-			DrawFPS(0, 0);
+				BeginDrawing();
+		
+				ClearBackground(WHITE);
 	
-			EndDrawing();
+				BeginMode3D(player->Camera());
+		
+				for (int i {0}; i < gameObjects.size(); ++i)
+				{
+					gameObjects[i]->Update();
+				}
+	
+				EndMode3D();
+	
+				for (int i {0}; i < userInterfaceObjects.size(); ++i)
+				{
+					userInterfaceObjects[i]->Update();
+				}
+	
+				DrawFPS(0, 0);
+		
+				EndDrawing();
+			}
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace PlayerProperties
 class Player : public IGameBase
 {
 public:
-	Player();
+	Player(const Vector2& MapSize, const Vector2& CubeSize);
 
 	void Update() override;
 

@@ -2,17 +2,8 @@
 #include "Enviornment.h"
 #include "rcamera.h"
 
-Player::Player() : m_Camera {Camera3D {Vector3Zero(), Vector3Zero(), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}
+Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}
 {
-	Environment environment {};
-
-	const Vector2 updatedPlayerPosition {environment.MapSize()};
-
-	Camera3D& camera {Camera()};
-
-	camera.position = {updatedPlayerPosition.y / 2, environment.CubeSize().y, updatedPlayerPosition.x / 2};
-
-	camera.target = {Vector3Add(camera.position, GetCameraForward(&camera))};  
 }
 
 void Player::Update()
