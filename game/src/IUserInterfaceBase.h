@@ -5,14 +5,9 @@
 class IUserInterfaceBase : public IBase
 {
 public:
-	inline IUserInterfaceBase(const char* TexutrePath) : m_UserInterfaceTexture {LoadTexture(TexutrePath)}
-	{
-	}
+	IUserInterfaceBase(const char* TexutrePath);
 
-	inline Texture UserInterfaceTexture() const
-	{
-		return m_UserInterfaceTexture;
-	}
+	Texture UserInterfaceTexture() const;
 
 private:
 	Texture m_UserInterfaceTexture {};
