@@ -5,6 +5,8 @@ Environment::Environment() : m_WallCubeModel {LoadModel("resources/Cube.obj")}, 
 {
 	m_WallCubeModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_WallCubeTexture; 
 	m_GroundCubeModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_GroundCubeTexture; 
+
+	GenerateMap();
 }
 
 Environment::~Environment()
@@ -128,4 +130,9 @@ void Environment::DebugActions()
 	{
 		DrawBoundingBox(boundingBox, DebugProperties::DEBUG_COLOUR);
 	}
+}
+
+std::vector<BoundingBox> Environment::BoundingBoxes() const
+{
+	return m_BoundingBoxes;
 }

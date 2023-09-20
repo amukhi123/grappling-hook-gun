@@ -40,7 +40,10 @@ void Game::GameLoop() const
 		if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})
 		{
 			Camera& cam {player->Camera()};
-		
+
+			GrapplingHookGun grapplingHookGun {environment->BoundingBoxes()};	
+			player->AttachGun(grapplingHookGun);
+
 			while (!WindowShouldClose())
 			{
 				BeginDrawing();

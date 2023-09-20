@@ -1,9 +1,8 @@
 #include "Player.h"
 #include "PlayerProperties.h"
-#include "Enviornment.h"
 #include "rcamera.h"
 
-Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}
+Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}, m_GrapplingHookGun {{}}
 {
 }
 
@@ -11,6 +10,7 @@ void Player::Update()
 {
 	UpdateCameraPro(&Camera(), Movement(), Rotation(), 0.f); 
 	CheckDebugActions();
+	Shoot();
 }
 
 Camera3D& Player::Camera() 
@@ -98,4 +98,19 @@ BoundingBox Player::GeneratePlayerBoundingBox()
 void Player::DebugActions()
 {
 	DrawBoundingBox(GeneratePlayerBoundingBox(), DebugProperties::DEBUG_COLOUR);
+
+	DrawSphere(Camera().target, DebugProperties::SPHERE_RADIUS, DebugProperties::DEBUG_COLOUR);
+}
+
+void Player::AttachGun(const GrapplingHookGun& Gun)
+{
+	m_GrapplingHookGun = Gun;
+}
+
+void Player::Shoot() const
+{
+	if (IsKeyDown(KEY_E))
+	{
+		m_GrapplingHookGun.Shoot(m_Camera.position, Vector3Normalize(Vector3Subtract(m_Camera.target, m_Camera.position)));
+	}
 }

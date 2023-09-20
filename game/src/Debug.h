@@ -7,6 +7,9 @@ namespace DebugProperties
 	inline constexpr Color DEBUG_COLOUR {RED};
 
 	inline constexpr int DEBUG_KEY {KEY_F};
+
+	// Sphere
+	inline constexpr float SPHERE_RADIUS {0.01f};
 };
 
 class Debug

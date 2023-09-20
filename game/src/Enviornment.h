@@ -25,6 +25,8 @@ public:
 	Vector2 CubeSize() const;
 
 	bool CheckCollisions(const BoundingBox& PlayerBoundingBox);
+
+	std::vector<BoundingBox> BoundingBoxes() const;
 private:
 	Model m_WallCubeModel {};
 	Model m_GroundCubeModel {};
