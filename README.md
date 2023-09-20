@@ -8,6 +8,7 @@ In this project, I create a grappling hook gun. The player is able to left-click
 
 WASD -> Movement
 <br>Arrow Keys -> Rotation
+<br>Left Shift -> Sprint
 
 ## Gallery
 

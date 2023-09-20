@@ -22,24 +22,37 @@ Vector3 Player::Movement() const
 {
 	Vector3 movementVector {Vector3Zero()};
 
+	float movementSpeed {0.f};
+
+	if (IsKeyDown(KEY_LEFT_SHIFT))
+	{
+		movementSpeed = PlayerProperties::PLAYER_SPRINT_SPEED;
+	}
+	else 
+	{
+		movementSpeed = PlayerProperties::PLAYER_MOVEMENT_SPEED;
+	}
+
+	movementSpeed *= GetFrameTime();
+
 	if (IsKeyDown(KEY_W))
 	{
-		movementVector.x += PlayerProperties::PLAYER_MOVEMENT_SPEED * GetFrameTime();
+		movementVector.x += movementSpeed;
 	}
 
 	if (IsKeyDown(KEY_S))
 	{
-		movementVector.x -= PlayerProperties::PLAYER_MOVEMENT_SPEED * GetFrameTime();
+		movementVector.x -= movementSpeed;
 	}
 
 	if (IsKeyDown(KEY_D))
 	{
-		movementVector.y += PlayerProperties::PLAYER_MOVEMENT_SPEED * GetFrameTime();
+		movementVector.y += movementSpeed;
 	}
 
 	if (IsKeyDown(KEY_A))
 	{
-		movementVector.y -= PlayerProperties::PLAYER_MOVEMENT_SPEED * GetFrameTime();
+		movementVector.y -= movementSpeed;
 	}
 
 	return movementVector;
