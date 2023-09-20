@@ -1,14 +1,16 @@
 #include "Player.h"
+#include "PlayerProperties.h"
 #include "Enviornment.h"
 #include "rcamera.h"
 
-Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}
+Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}
 {
 }
 
 void Player::Update()
 {
 	UpdateCameraPro(&Camera(), Movement(), Rotation(), 0.f); 
+	CheckDebugActions();
 }
 
 Camera3D& Player::Camera() 
@@ -65,4 +67,22 @@ Vector3 Player::Rotation() const
 	}
 
 	return rotationVector;
+}
+
+BoundingBox Player::GeneratePlayerBoundingBox()
+{
+	const float halfPlayerSize {PlayerProperties::PLAYER_SIZE / 2};
+
+	const Vector3 halfPlayerSizeVector {halfPlayerSize, halfPlayerSize, halfPlayerSize};
+	const Vector3 bottomLeftPlayerPosition {Vector3Subtract(Camera().position, halfPlayerSizeVector)};
+	const Vector3 topRightPlayerPosition {PlayerProperties::PLAYER_SIZE, PlayerProperties::PLAYER_SIZE, PlayerProperties::PLAYER_SIZE};
+
+	const BoundingBox playerBoundingBox {bottomLeftPlayerPosition, Vector3Add(bottomLeftPlayerPosition, topRightPlayerPosition)};
+
+	return playerBoundingBox;
+}
+
+void Player::DebugActions()
+{
+	DrawBoundingBox(GeneratePlayerBoundingBox(), DebugProperties::DEBUG_COLOUR);
 }

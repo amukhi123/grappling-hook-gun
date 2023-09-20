@@ -1,4 +1,5 @@
 #include "Enviornment.h"
+#include "PlayerProperties.h"
 
 Environment::Environment() : m_WallCubeModel {LoadModel("resources/Cube.obj")}, m_GroundCubeModel {LoadModel("resources/Cube.obj")}, m_WallCubeTexture {LoadTexture("resources/WallCubeTexture.png")}, m_GroundCubeTexture {LoadTexture("resources/GroundCubeTexture.png")}, m_MapImage {LoadImage("resources/Map.png")}, m_MapSize {static_cast<float>(m_MapImage.width), static_cast<float>(m_MapImage.height)}, m_CubeSize {2.f, 2.f}, m_BoundingBoxes {}, m_IsFinishedGeneratingBoundingBoxes {false}
 {
@@ -18,7 +19,6 @@ Environment::~Environment()
 void Environment::Update()
 {
 	GenerateMap();
-	CheckCollisions(Vector3Zero());
 	CheckDebugActions();
 }
 
@@ -100,11 +100,16 @@ Vector2 Environment::CubeSize() const
 	return m_CubeSize;
 }
 
-// Just for debugging purposing until a future commit
-bool Environment::CheckCollisions(const Vector3& PlayerPosition)
+bool Environment::CheckCollisions(const BoundingBox& PlayerBoundingBox)
 {
-	const BoundingBox playerBoundingBox {};
 
+	for (const BoundingBox& boundingBox : m_BoundingBoxes)
+	{
+		if (CheckCollisionBoxes(PlayerBoundingBox, boundingBox))
+		{
+			return true;
+		}
+	}
 
 	return false;
 }

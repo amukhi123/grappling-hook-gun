@@ -24,7 +24,7 @@ public:
 
 	Vector2 CubeSize() const;
 
-	bool CheckCollisions(const Vector3& PlayerPosition);
+	bool CheckCollisions(const BoundingBox& PlayerBoundingBox);
 private:
 	Model m_WallCubeModel {};
 	Model m_GroundCubeModel {};

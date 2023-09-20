@@ -39,7 +39,7 @@ void Game::GameLoop() const
 	
 		if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})
 		{
-			Camera cam {player->Camera()};
+			Camera& cam {player->Camera()};
 		
 			while (!WindowShouldClose())
 			{
@@ -48,12 +48,19 @@ void Game::GameLoop() const
 				ClearBackground(WHITE);
 	
 				BeginMode3D(player->Camera());
-		
+
+				Vector3 oldPlayerPosition {cam.position};		
+
 				for (int i {0}; i < gameObjects.size(); ++i)
 				{
 					gameObjects[i]->Update();
 				}
-	
+
+				if (environment->CheckCollisions(player->GeneratePlayerBoundingBox()))
+				{
+					cam.position = oldPlayerPosition;
+				}
+
 				EndMode3D();
 	
 				for (int i {0}; i < userInterfaceObjects.size(); ++i)
