@@ -10,6 +10,11 @@ namespace DebugProperties
 
 	// Sphere
 	inline constexpr float SPHERE_RADIUS {0.01f};
+
+	// Capsule
+	inline constexpr float CAPSULE_RADIUS {0.05f};
+	inline constexpr int CAPSUPLE_SLICES {5};
+	inline constexpr int CAPSULE_RINGS {5};
 };
 
 class Debug

@@ -11,6 +11,7 @@ GrapplingHookGun::GrapplingHookGun(const std::vector<BoundingBox>& BoundingBoxes
 void GrapplingHookGun::Shoot(const Vector3& Origin, const Vector3& Direction) const
 {
 	Ray ray {Origin, Direction};
+
 	RayCollision closestRayCollision {false, std::numeric_limits<float>::max(), Vector3Zero(), Vector3Zero()};
 
 	for (const BoundingBox& boundingBox : m_BoundingBoxes)
@@ -23,9 +24,9 @@ void GrapplingHookGun::Shoot(const Vector3& Origin, const Vector3& Direction) co
 		}
 	}
 
-	rlSetLineWidth(GrapplingHookGunProperties::LINE_WIDTH);
+	constexpr Vector3 eyesVector {0.f, 0.3f, 0.f};
 
-	DrawLine3D(Origin, closestRayCollision.point, DebugProperties::DEBUG_COLOUR);
+	DrawCapsule(Vector3Subtract(Origin, eyesVector), closestRayCollision.point, DebugProperties::CAPSULE_RADIUS, DebugProperties::CAPSUPLE_SLICES, DebugProperties::CAPSULE_RINGS, DebugProperties::DEBUG_COLOUR);
 }
 
 void GrapplingHookGun::AddBoundingBoxes(const std::vector<BoundingBox>& BoundingBoxes)
