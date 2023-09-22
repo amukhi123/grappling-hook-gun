@@ -66,6 +66,7 @@ void Game::GameLoop() const
 				if (environment->CheckCollisions(player->GeneratePlayerBoundingBox()))
 				{
 					cam.position = oldPlayerPosition;
+					cam.target = oldTargetPosition;
 				}
 
 				EndMode3D();
