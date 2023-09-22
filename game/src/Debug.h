@@ -15,6 +15,10 @@ namespace DebugProperties
 	inline constexpr float CAPSULE_RADIUS {0.05f};
 	inline constexpr int CAPSUPLE_SLICES {5};
 	inline constexpr int CAPSULE_RINGS {5};
+
+	// Text
+	inline constexpr Color TEXT_COLOUR {WHITE};
+	inline constexpr int FONT_SIZE {30};
 };
 
 class Debug

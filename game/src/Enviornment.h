@@ -8,7 +8,7 @@
 namespace EnvironmentProperties
 {
 	// This does not include the ground or the roof
-	inline constexpr int MAP_HEIGHT {2};
+	inline constexpr int MAP_HEIGHT {6};
 }
 
 class Environment : public IGameBase, public Debug

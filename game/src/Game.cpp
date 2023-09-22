@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "IBase.h"
 #include "Crosshair.h"
+#include "PlayerDebugUserInterface.h"
 
 Game::Game()
 {
@@ -39,6 +40,8 @@ void Game::GameLoop() const
 	
 		if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})
 		{
+			userInterfaceObjects.push_back(std::make_shared<PlayerDebugUserInterface>(player));
+
 			Camera& cam {player->Camera()};
 
 			GrapplingHookGun grapplingHookGun {environment->BoundingBoxes()};	
@@ -52,7 +55,8 @@ void Game::GameLoop() const
 	
 				BeginMode3D(player->Camera());
 
-				Vector3 oldPlayerPosition {cam.position};		
+				const Vector3 oldPlayerPosition {cam.position};	
+				const Vector3 oldTargetPosition {cam.target};
 
 				for (int i {0}; i < gameObjects.size(); ++i)
 				{
