@@ -171,8 +171,17 @@ void Player::Shoot()
 		Camera3D& player {Camera()};
 	
 		const Vector3 relativeTargetPosition {Vector3Subtract(m_Camera.target, m_Camera.position)};
-	
+
+		const Vector3 oldPlayerPosition {player.position};
+
 		player.position = m_GrapplingHookGun.Shoot(m_Camera.position, Vector3Normalize(relativeTargetPosition), m_CurrentPlayerState);
+
+		if (IsColliding())
+		{
+			player.position = oldPlayerPosition;
+
+			m_CurrentPlayerState = PlayerProperties::PlayerStates::Falling;
+		}
 
 		if (player.position.y < PlayerProperties::MINIMUM_Y_POSITION)
 		{

@@ -1,7 +1,6 @@
 #include <limits>
 
 #include "GrapplingHookGun.h"
-#include "rlgl.h"
 #include "Debug.h"
 
 GrapplingHookGun::GrapplingHookGun(const std::vector<BoundingBox>& BoundingBoxes) : m_BoundingBoxes {BoundingBoxes}, m_HitPoint {}
