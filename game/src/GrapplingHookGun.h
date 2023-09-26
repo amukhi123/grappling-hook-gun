@@ -28,7 +28,5 @@ private:
 
 	Vector3 BeginGrapple(const Vector3& Origin, const Vector3& HitPoint);
 
-	Vector3 EndGrapple();
-
 	Vector3 HitPoint(const Vector3& Origin, const Vector3& Direction);
 };

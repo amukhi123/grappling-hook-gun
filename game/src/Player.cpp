@@ -1,7 +1,9 @@
+#include <vector>
+
 #include "Player.h"
 #include "rcamera.h"
 
-Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}, m_GrapplingHookGun {{}}, m_CurrentPlayerState {PlayerProperties::PlayerStates::Default}
+Player::Player(const Vector2& MapSize, const Vector2& CubeSize, const std::vector<BoundingBox>& EnvironmentBoundingBoxes) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}, m_GrapplingHookGun {{}}, m_CurrentPlayerState {PlayerProperties::PlayerStates::Default}, m_EnvironmentBoundingBoxes {EnvironmentBoundingBoxes}
 {
 }
 
@@ -10,7 +12,7 @@ void Player::Update()
 	switch (m_CurrentPlayerState)
 	{
 		case PlayerProperties::PlayerStates::Default:
-			UpdateCameraPro(&Camera(), Movement(), Rotation(), 0.f); 
+			RequestMovement();
 			RequestShot();
 			break;
 		case PlayerProperties::PlayerStates::Grapple:
@@ -28,6 +30,26 @@ void Player::Update()
 Camera3D& Player::Camera() 
 {
 	return m_Camera;
+}
+
+void Player::AttachGun(const GrapplingHookGun& Gun)
+{
+	m_GrapplingHookGun = Gun;
+}
+
+bool Player::IsColliding()
+{
+	BoundingBox playerBoundingBox {GenerateBoundingBox()};
+
+	for (const BoundingBox& boundingBox : m_EnvironmentBoundingBoxes)
+	{
+		if (CheckCollisionBoxes(GenerateBoundingBox(), boundingBox))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 Vector3 Player::Movement() const
@@ -94,7 +116,7 @@ Vector3 Player::Rotation() const
 	return rotationVector;
 }
 
-BoundingBox Player::GeneratePlayerBoundingBox()
+BoundingBox Player::GenerateBoundingBox()
 {
 	const float halfPlayerSize {PlayerProperties::PLAYER_SIZE / 2};
 
@@ -109,14 +131,9 @@ BoundingBox Player::GeneratePlayerBoundingBox()
 
 void Player::DebugActions()
 {
-	DrawBoundingBox(GeneratePlayerBoundingBox(), DebugProperties::DEBUG_COLOUR);
+	DrawBoundingBox(GenerateBoundingBox(), DebugProperties::DEBUG_COLOUR);
 
 	DrawSphere(Camera().target, DebugProperties::SPHERE_RADIUS, DebugProperties::DEBUG_COLOUR);
-}
-
-void Player::AttachGun(const GrapplingHookGun& Gun)
-{
-	m_GrapplingHookGun = Gun;
 }
 
 void Player::RequestShot()
@@ -127,13 +144,36 @@ void Player::RequestShot()
 	}
 }
 
-void Player::Shoot()
+void Player::RequestMovement()
 {
 	Camera3D& player {Camera()};
 
-	const Vector3 relativeTargetPosition {Vector3Subtract(m_Camera.target, m_Camera.position)};
+	const Vector3 oldPlayerPosition {player.position};
+	const Vector3 oldTargetPosition {player.target};
 
-	player.position = m_GrapplingHookGun.Shoot(m_Camera.position, Vector3Normalize(relativeTargetPosition), m_CurrentPlayerState);
+	UpdateCameraPro(&Camera(), Movement(), Rotation(), 0.f); 
 
-	player.target = Vector3Add(player.position, relativeTargetPosition);
+	if (IsColliding())
+	{
+		player.position = oldPlayerPosition;
+		player.target = oldTargetPosition;
+	}
+}
+
+void Player::Shoot()
+{
+	if (IsColliding())
+	{
+		m_CurrentPlayerState = PlayerProperties::PlayerStates::Falling;
+	}
+	else
+	{
+		Camera3D& player {Camera()};
+	
+		const Vector3 relativeTargetPosition {Vector3Subtract(m_Camera.target, m_Camera.position)};
+	
+		player.position = m_GrapplingHookGun.Shoot(m_Camera.position, Vector3Normalize(relativeTargetPosition), m_CurrentPlayerState);
+	
+		player.target = Vector3Add(player.position, relativeTargetPosition);
+	}
 }

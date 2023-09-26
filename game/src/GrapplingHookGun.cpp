@@ -19,13 +19,9 @@ Vector3& GrapplingHookGun::Shoot(const Vector3& Origin, const Vector3& Direction
 	if (Vector3Distance(m_HitPoint, Origin) < PlayerProperties::PLAYER_SIZE)
 	{
 		OutPlayerState = PlayerProperties::PlayerStates::Falling;
+	}
 
-		return EndGrapple();
-	}
-	else
-	{
-		return BeginGrapple(Origin, m_HitPoint);
-	}
+	return BeginGrapple(Origin, m_HitPoint);
 }
 
 void GrapplingHookGun::AddBoundingBoxes(const std::vector<BoundingBox>& BoundingBoxes)
@@ -55,11 +51,6 @@ Vector3 GrapplingHookGun::MoveTowards(const Vector3& Source, const Vector3& Dest
 	const Vector3 adjustedMovementVector {Vector3Multiply(movementVector, speedVector)};
 
 	return Vector3Add(Source, adjustedMovementVector);
-}
-
-Vector3 GrapplingHookGun::EndGrapple()
-{
-	return Vector3Zero();
 }
 
 Vector3 GrapplingHookGun::HitPoint(const Vector3& Origin, const Vector3& Direction)

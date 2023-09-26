@@ -32,7 +32,7 @@ void Game::GameLoop() const
 
 	if (std::shared_ptr<Environment> environment {std::dynamic_pointer_cast<Environment>(gameObjects[static_cast<int>(GameProperties::GameObjects::Environment)])})
 	{
-		gameObjects.push_back(std::make_shared<Player>(environment->MapSize(), environment->CubeSize()));
+		gameObjects.push_back(std::make_shared<Player>(environment->MapSize(), environment->CubeSize(), environment->BoundingBoxes()));
 	
 		std::vector<std::shared_ptr<IBase>> userInterfaceObjects {};
 	
@@ -55,18 +55,9 @@ void Game::GameLoop() const
 	
 				BeginMode3D(player->Camera());
 
-				const Vector3 oldPlayerPosition {cam.position};	
-				const Vector3 oldTargetPosition {cam.target};
-
 				for (int i {0}; i < gameObjects.size(); ++i)
 				{
 					gameObjects[i]->Update();
-				}
-
-				if (environment->CheckCollisions(player->GeneratePlayerBoundingBox()))
-				{
-					cam.position = oldPlayerPosition;
-					cam.target = oldTargetPosition;
 				}
 
 				EndMode3D();
