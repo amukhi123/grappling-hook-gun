@@ -1,16 +1,28 @@
 #include "Player.h"
-#include "PlayerProperties.h"
 #include "rcamera.h"
 
-Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}, m_GrapplingHookGun {{}}
+Player::Player(const Vector2& MapSize, const Vector2& CubeSize) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}, m_GrapplingHookGun {{}}, m_CurrentPlayerState {PlayerProperties::PlayerStates::Default}
 {
 }
 
 void Player::Update()
 {
-	UpdateCameraPro(&Camera(), Movement(), Rotation(), 0.f); 
+	switch (m_CurrentPlayerState)
+	{
+		case PlayerProperties::PlayerStates::Default:
+			UpdateCameraPro(&Camera(), Movement(), Rotation(), 0.f); 
+			RequestShot();
+			break;
+		case PlayerProperties::PlayerStates::Grapple:
+		case PlayerProperties::PlayerStates::InAir:
+			Shoot();
+			break;
+		case PlayerProperties::PlayerStates::Falling:
+			// Implement gravity
+			break;
+	}
+
 	CheckDebugActions();
-	Shoot();
 }
 
 Camera3D& Player::Camera() 
@@ -28,7 +40,7 @@ Vector3 Player::Movement() const
 	{
 		movementSpeed = PlayerProperties::PLAYER_SPRINT_SPEED;
 	}
-	else 
+	else
 	{
 		movementSpeed = PlayerProperties::PLAYER_MOVEMENT_SPEED;
 	}
@@ -107,10 +119,21 @@ void Player::AttachGun(const GrapplingHookGun& Gun)
 	m_GrapplingHookGun = Gun;
 }
 
-void Player::Shoot() const
+void Player::RequestShot()
 {
 	if (IsKeyDown(KEY_E))
 	{
-		m_GrapplingHookGun.Shoot(m_Camera.position, Vector3Normalize(Vector3Subtract(m_Camera.target, m_Camera.position)));
+		m_CurrentPlayerState = PlayerProperties::PlayerStates::Grapple;
 	}
+}
+
+void Player::Shoot()
+{
+	Camera3D& player {Camera()};
+
+	const Vector3 relativeTargetPosition {Vector3Subtract(m_Camera.target, m_Camera.position)};
+
+	player.position = m_GrapplingHookGun.Shoot(m_Camera.position, Vector3Normalize(relativeTargetPosition), m_CurrentPlayerState);
+
+	player.target = Vector3Add(player.position, relativeTargetPosition);
 }

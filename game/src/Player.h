@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IGameBase.h"
+#include "PlayerProperties.h"
 #include "Debug.h"
 #include "GrapplingHookGun.h"
 
@@ -18,15 +19,19 @@ public:
 	void AttachGun(const GrapplingHookGun& Gun);
 protected:
 	void DebugActions() override;
-
 private:
+
 	Camera3D m_Camera {};
 
 	GrapplingHookGun m_GrapplingHookGun {{}};
+
+	PlayerProperties::PlayerStates m_CurrentPlayerState {};
 
 	Vector3 Movement() const;
 
 	Vector3 Rotation() const;
 
-	void Shoot() const;
+	void RequestShot();
+
+	void Shoot();
 };

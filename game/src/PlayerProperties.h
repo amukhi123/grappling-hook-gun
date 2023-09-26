@@ -10,4 +10,14 @@ namespace PlayerProperties
 	inline constexpr float PLAYER_ROTATION_SPEED {240.f};
 	inline constexpr float PLAYER_FOV {45.f};
 	inline constexpr float PLAYER_SIZE {2.f};
+
+	// Violates ODR?
+	enum class PlayerStates
+	{
+		// Currently default encompesses idle, walk and sprint
+		Default,
+		Grapple,
+		InAir,
+		Falling
+	};
 }
