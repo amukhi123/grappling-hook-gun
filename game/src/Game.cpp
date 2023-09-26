@@ -45,6 +45,7 @@ void Game::GameLoop() const
 			Camera& cam {player->Camera()};
 
 			GrapplingHookGun grapplingHookGun {environment->BoundingBoxes()};	
+
 			player->AttachGun(grapplingHookGun);
 
 			while (!WindowShouldClose())

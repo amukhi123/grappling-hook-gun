@@ -13,6 +13,7 @@ Vector3& GrapplingHookGun::Shoot(const Vector3& Origin, const Vector3& Direction
 	if (OutPlayerState == PlayerProperties::PlayerStates::Grapple)
 	{
 		m_HitPoint = HitPoint(Origin, Direction);
+
 		OutPlayerState = PlayerProperties::PlayerStates::InAir;
 	}
 

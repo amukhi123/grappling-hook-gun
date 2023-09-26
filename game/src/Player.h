@@ -39,4 +39,6 @@ private:
 	void RequestMovement();
 
 	void Shoot();
+
+	void Fall();
 };

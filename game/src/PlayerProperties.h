@@ -8,8 +8,10 @@ namespace PlayerProperties
 	inline constexpr float PLAYER_SPRINT_SPEED {8.7262208f};
 	// The peak turning speed of a human head is 240 degrees/s
 	inline constexpr float PLAYER_ROTATION_SPEED {240.f};
+	inline constexpr float PLAYER_FALL_SPEED {10.f};
 	inline constexpr float PLAYER_FOV {45.f};
 	inline constexpr float PLAYER_SIZE {2.f};
+	inline constexpr float MINIMUM_Y_POSITION {3.f};
 
 	// Violates ODR?
 	enum class PlayerStates

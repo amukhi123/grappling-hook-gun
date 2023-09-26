@@ -20,7 +20,7 @@ void Player::Update()
 			Shoot();
 			break;
 		case PlayerProperties::PlayerStates::Falling:
-			// Implement gravity
+			Fall();
 			break;
 	}
 
@@ -173,7 +173,35 @@ void Player::Shoot()
 		const Vector3 relativeTargetPosition {Vector3Subtract(m_Camera.target, m_Camera.position)};
 	
 		player.position = m_GrapplingHookGun.Shoot(m_Camera.position, Vector3Normalize(relativeTargetPosition), m_CurrentPlayerState);
-	
+
+		if (player.position.y < PlayerProperties::MINIMUM_Y_POSITION)
+		{
+			player.position.y = PlayerProperties::MINIMUM_Y_POSITION;
+
+			m_CurrentPlayerState = PlayerProperties::PlayerStates::Default;
+		}
+
 		player.target = Vector3Add(player.position, relativeTargetPosition);
+	}
+}
+
+void Player::Fall()
+{
+	Camera3D& player {Camera()};
+
+	const float oldTargetYPos {player.target.y};
+
+	const float gravity {GetFrameTime() * PlayerProperties::PLAYER_FALL_SPEED};
+
+	player.position.y -= gravity;
+	player.target.y -= gravity;
+
+	if (Camera().position.y < PlayerProperties::MINIMUM_Y_POSITION)
+	{
+		m_CurrentPlayerState = PlayerProperties::PlayerStates::Default;
+
+		player.position.y = PlayerProperties::MINIMUM_Y_POSITION;
+
+		player.target.y = oldTargetYPos;
 	}
 }
