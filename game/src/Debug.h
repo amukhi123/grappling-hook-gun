@@ -17,7 +17,7 @@ namespace DebugProperties
 	inline constexpr int CAPSULE_RINGS {5};
 
 	// Text
-	inline constexpr Color TEXT_COLOUR {WHITE};
+	inline constexpr Color TEXT_COLOUR {GREEN};
 	inline constexpr int FONT_SIZE {30};
 };
 

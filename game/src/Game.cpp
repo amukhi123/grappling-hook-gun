@@ -11,10 +11,12 @@
 
 Game::Game()
 {
-	constexpr int WINDOW_WIDTH {1000};
-	constexpr int WINDOW_HEIGHT {1000};
+	constexpr int WINDOW_WIDTH {1920};
+	constexpr int WINDOW_HEIGHT {1080};
 
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Grappling Hook Gun");
+
+	ToggleFullscreen();
 
 	DisableCursor();
 }
@@ -32,7 +34,7 @@ void Game::GameLoop() const
 
 	if (std::shared_ptr<Environment> environment {std::dynamic_pointer_cast<Environment>(gameObjects[static_cast<int>(GameProperties::GameObjects::Environment)])})
 	{
-		gameObjects.push_back(std::make_shared<Player>(environment->MapSize(), environment->CubeSize(), environment->BoundingBoxes()));
+		gameObjects.push_back(std::make_shared<Player>(environment->PlayerSpawnPosition(), environment->CubeSize(), environment->BoundingBoxes()));
 	
 		std::vector<std::shared_ptr<IBase>> userInterfaceObjects {};
 	
@@ -47,6 +49,8 @@ void Game::GameLoop() const
 			GrapplingHookGun grapplingHookGun {environment->BoundingBoxes()};	
 
 			player->AttachGun(grapplingHookGun);
+
+			constexpr int fpsTextPosition {10};
 
 			while (!WindowShouldClose())
 			{
@@ -66,9 +70,9 @@ void Game::GameLoop() const
 				for (int i {0}; i < userInterfaceObjects.size(); ++i)
 				{
 					userInterfaceObjects[i]->Update();
-				}
-	
-				DrawFPS(0, 0);
+				}	
+
+				DrawFPS(fpsTextPosition, fpsTextPosition);
 		
 				EndDrawing();
 			}

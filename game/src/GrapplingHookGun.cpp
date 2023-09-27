@@ -32,15 +32,6 @@ void GrapplingHookGun::AddBoundingBoxes(const std::vector<BoundingBox>& Bounding
 	}
 }
 
-Vector3 GrapplingHookGun::BeginGrapple(const Vector3& Origin, const Vector3& HitPoint)
-{
-	constexpr Vector3 grappleGunOffset {0.f, 0.3f, 0.f};
-
-	DrawCapsule(Vector3Subtract(Origin, grappleGunOffset), HitPoint, DebugProperties::CAPSULE_RADIUS, DebugProperties::CAPSUPLE_SLICES, DebugProperties::CAPSULE_RINGS, DebugProperties::DEBUG_COLOUR);
-
-	return MoveTowards(Origin, HitPoint);
-}
-
 Vector3 GrapplingHookGun::MoveTowards(const Vector3& Source, const Vector3& Destination)
 {
 	const Vector3 movementVector {Vector3Normalize(Vector3Subtract(Destination, Source))};
@@ -51,6 +42,15 @@ Vector3 GrapplingHookGun::MoveTowards(const Vector3& Source, const Vector3& Dest
 	const Vector3 adjustedMovementVector {Vector3Multiply(movementVector, speedVector)};
 
 	return Vector3Add(Source, adjustedMovementVector);
+}
+
+Vector3 GrapplingHookGun::BeginGrapple(const Vector3& Origin, const Vector3& HitPoint)
+{
+	constexpr Vector3 grappleGunOffset {0.f, 0.3f, 0.f};
+
+	DrawCapsule(Vector3Subtract(Origin, grappleGunOffset), HitPoint, DebugProperties::CAPSULE_RADIUS, DebugProperties::CAPSUPLE_SLICES, DebugProperties::CAPSULE_RINGS, DebugProperties::DEBUG_COLOUR);
+
+	return MoveTowards(Origin, HitPoint);
 }
 
 Vector3 GrapplingHookGun::HitPoint(const Vector3& Origin, const Vector3& Direction)
