@@ -14,6 +14,8 @@ WASD -> Movement
 
 ## Gallery
 
+### **Click the thumbnail to play the video**
+
 [![Grappling Hook Gun Implementation Showcase](https://img.youtube.com/vi/f_KirG8yoEI/0.jpg)](https://youtu.be/f_KirG8yoEI)
 
 ## How to Run
