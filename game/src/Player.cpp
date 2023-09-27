@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "rcamera.h"
 
-Player::Player(const Vector2& MapSize, const Vector2& CubeSize, const std::vector<BoundingBox>& EnvironmentBoundingBoxes) : m_Camera {Camera3D {{MapSize.y / 2, CubeSize.x + PlayerProperties::PLAYER_SIZE / 2, MapSize.x / 2}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}, m_GrapplingHookGun {{}}, m_CurrentPlayerState {PlayerProperties::PlayerStates::Default}, m_EnvironmentBoundingBoxes {EnvironmentBoundingBoxes}
+Player::Player(const Vector2& PlayerSpawnPosition, const Vector2& CubeSize, const std::vector<BoundingBox>& EnvironmentBoundingBoxes) : m_Camera {Camera3D {{PlayerSpawnPosition.x, PlayerProperties::MINIMUM_Y_POSITION, PlayerSpawnPosition.y}, Vector3Add(Camera().position, GetCameraForward(&Camera())), VectorConstants::UP_VECTOR, PlayerProperties::PLAYER_FOV, CAMERA_PERSPECTIVE}}, m_GrapplingHookGun {{}}, m_CurrentPlayerState {PlayerProperties::PlayerStates::Default}, m_EnvironmentBoundingBoxes {EnvironmentBoundingBoxes}
 {
 }
 
@@ -52,6 +52,13 @@ bool Player::IsColliding()
 	return false;
 }
 
+void Player::DebugActions()
+{
+	DrawBoundingBox(GenerateBoundingBox(), DebugProperties::DEBUG_COLOUR);
+
+	DrawSphere(Camera().target, DebugProperties::SPHERE_RADIUS, DebugProperties::DEBUG_COLOUR);
+}
+
 Vector3 Player::Movement() const
 {
 	Vector3 movementVector {Vector3Zero()};
@@ -96,21 +103,23 @@ Vector3 Player::Rotation() const
 {
 	Vector3 rotationVector {Vector3Zero()};
 
+	const float speedMultiplier {PlayerProperties::PLAYER_ROTATION_SPEED * GetFrameTime()};
+
 	if (IsKeyDown(KEY_UP))
 	{
-		rotationVector.y -= PlayerProperties::PLAYER_ROTATION_SPEED * GetFrameTime();
+		rotationVector.y -= speedMultiplier;
 	}
 	else if (IsKeyDown(KEY_DOWN))
 	{
-		rotationVector.y += PlayerProperties::PLAYER_ROTATION_SPEED * GetFrameTime();
+		rotationVector.y += speedMultiplier;
 	}
 	else if (IsKeyDown(KEY_RIGHT))
 	{
-		rotationVector.x += PlayerProperties::PLAYER_ROTATION_SPEED * GetFrameTime();
+		rotationVector.x += speedMultiplier;
 	}
 	else if (IsKeyDown(KEY_LEFT))
 	{
-		rotationVector.x -= PlayerProperties::PLAYER_ROTATION_SPEED * GetFrameTime();
+		rotationVector.x -= speedMultiplier;
 	}
 
 	return rotationVector;
@@ -120,20 +129,11 @@ BoundingBox Player::GenerateBoundingBox()
 {
 	const float halfPlayerSize {PlayerProperties::PLAYER_SIZE / 2};
 
-	const Vector3 halfPlayerSizeVector {halfPlayerSize, halfPlayerSize, halfPlayerSize};
-	const Vector3 bottomLeftPlayerPosition {Vector3Subtract(Camera().position, halfPlayerSizeVector)};
-	const Vector3 topRightPlayerPosition {PlayerProperties::PLAYER_SIZE, PlayerProperties::PLAYER_SIZE, PlayerProperties::PLAYER_SIZE};
+	const Vector3 bottomLeftPlayerPosition {Vector3Subtract(Camera().position, VectorHelpers::Vector3FromFloat(halfPlayerSize))};
 
-	const BoundingBox playerBoundingBox {bottomLeftPlayerPosition, Vector3Add(bottomLeftPlayerPosition, topRightPlayerPosition)};
+	const BoundingBox playerBoundingBox {bottomLeftPlayerPosition, Vector3Add(bottomLeftPlayerPosition, VectorHelpers::Vector3FromFloat(PlayerProperties::PLAYER_SIZE))};
 
 	return playerBoundingBox;
-}
-
-void Player::DebugActions()
-{
-	DrawBoundingBox(GenerateBoundingBox(), DebugProperties::DEBUG_COLOUR);
-
-	DrawSphere(Camera().target, DebugProperties::SPHERE_RADIUS, DebugProperties::DEBUG_COLOUR);
 }
 
 void Player::RequestShot()

@@ -1,11 +1,12 @@
 #include "Enviornment.h"
 #include "PlayerProperties.h"
 
-Environment::Environment() : m_WallCubeModel {LoadModel("resources/Cube.obj")}, m_GroundCubeModel {LoadModel("resources/Cube.obj")}, m_WallCubeTexture {LoadTexture("resources/WallCubeTexture.png")}, m_GroundCubeTexture {LoadTexture("resources/GroundCubeTexture.png")}, m_MapImage {LoadImage("resources/Map.png")}, m_MapSize {static_cast<float>(m_MapImage.width), static_cast<float>(m_MapImage.height)}, m_CubeSize {2.f, 2.f}, m_BoundingBoxes {}, m_IsFinishedGeneratingBoundingBoxes {false}
+Environment::Environment() : m_WallCubeModel {LoadModel("resources/Cube.obj")}, m_GroundCubeModel {LoadModel("resources/Cube.obj")}, m_WallCubeTexture {LoadTexture("resources/WallCubeTexture.png")}, m_GroundCubeTexture {LoadTexture("resources/GroundCubeTexture.png")}, m_MapImage {LoadImage("resources/Map.png")}, m_CubeSize {2.f, 2.f}, m_BoundingBoxes {}, m_IsFinishedGeneratingBoundingBoxes {false}, m_PlayerSpawnPosition {}
 {
 	m_WallCubeModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_WallCubeTexture; 
 	m_GroundCubeModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_GroundCubeTexture; 
 
+	// Called to generate bounding boxes
 	GenerateMap();
 }
 
@@ -24,12 +25,28 @@ void Environment::Update()
 	CheckDebugActions();
 }
 
+Vector2 Environment::CubeSize() const
+{
+	return m_CubeSize;
+}
+
+Vector2 Environment::PlayerSpawnPosition() const
+{
+	return m_PlayerSpawnPosition;
+}
+
+std::vector<BoundingBox> Environment::BoundingBoxes() const
+{
+	return m_BoundingBoxes;
+}
+
 void Environment::GenerateMap()
 {
 	constexpr Color GROUND_COLOUR {BLACK};
 	constexpr Color WALL_COLOUR {WHITE};
+	constexpr Color PLAYER_SPAWN_COLOUR {0.f, 0.f, 255.f, 255.f};
 
-	const Vector2 mapSize {MapSize()};
+	const Vector2 mapSize {m_MapImage.width, m_MapImage.height};
 	const Vector2 cubeSize {CubeSize()};
 
 	for (int x {0}; x < mapSize.x; ++x)
@@ -38,7 +55,7 @@ void Environment::GenerateMap()
 		{
 			const Color cellColour {GetImageColor(m_MapImage, x, y)};
 		
-			if (CompareColour(cellColour, GROUND_COLOUR) || CompareColour(cellColour, WALL_COLOUR))
+			if (CompareColour(cellColour, GROUND_COLOUR) || CompareColour(cellColour, WALL_COLOUR) || CompareColour(cellColour, PLAYER_SPAWN_COLOUR))
 			{
 				const float placementLength {x * cubeSize.x};
 				const float placementWidth {y * cubeSize.x};
@@ -61,6 +78,11 @@ void Environment::GenerateMap()
 				const Vector3 roofBottomLeftPosition {Vector3Subtract(roofCubePosition, halfCubeSize)};
 
 				AddBoundingBox(roofBottomLeftPosition, Vector3Add(roofBottomLeftPosition, cubeTopRightPosition));
+
+				if (CompareColour(cellColour, PLAYER_SPAWN_COLOUR))
+				{
+					m_PlayerSpawnPosition = {placementLength, placementWidth};
+				}
 
 				if (CompareColour(cellColour, WALL_COLOUR))
 				{
@@ -92,30 +114,6 @@ bool Environment::CompareColour(const Color& LeftColour, const Color& RightColou
 	return LeftColour.r == RightColour.r && LeftColour.b == RightColour.b && LeftColour.g == RightColour.g && LeftColour.a == RightColour.a;
 }
 
-Vector2 Environment::MapSize() const
-{
-	return m_MapSize;
-}
-
-Vector2 Environment::CubeSize() const
-{
-	return m_CubeSize;
-}
-
-bool Environment::CheckCollisions(const BoundingBox& PlayerBoundingBox)
-{
-
-	for (const BoundingBox& boundingBox : m_BoundingBoxes)
-	{
-		if (CheckCollisionBoxes(PlayerBoundingBox, boundingBox))
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
 void Environment::AddBoundingBox(const Vector3& MinBoundingBoxPosition, const Vector3& MaxBoundingBoxPosition)
 {
 	if (!m_IsFinishedGeneratingBoundingBoxes)
@@ -130,9 +128,4 @@ void Environment::DebugActions()
 	{
 		DrawBoundingBox(boundingBox, DebugProperties::DEBUG_COLOUR);
 	}
-}
-
-std::vector<BoundingBox> Environment::BoundingBoxes() const
-{
-	return m_BoundingBoxes;
 }

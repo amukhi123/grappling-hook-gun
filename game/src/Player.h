@@ -8,7 +8,7 @@
 class Player : public IGameBase, public Debug
 {
 public:
-	Player(const Vector2& MapSize, const Vector2& CubeSize, const std::vector<BoundingBox>& EnvironmentBoundingBoxes);
+	Player(const Vector2& PlayerSpawnPosition, const Vector2& CubeSize, const std::vector<BoundingBox>& EnvironmentBoundingBoxes);
 
 	void Update() override;
 

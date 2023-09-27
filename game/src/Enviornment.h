@@ -20,11 +20,9 @@ public:
 
 	void Update() override;
 
-	Vector2 MapSize() const;
-
 	Vector2 CubeSize() const;
 
-	bool CheckCollisions(const BoundingBox& PlayerBoundingBox);
+	Vector2 PlayerSpawnPosition() const;
 
 	std::vector<BoundingBox> BoundingBoxes() const;
 private:
@@ -36,8 +34,8 @@ private:
 
 	Image m_MapImage {};
 
-	Vector2 m_MapSize {};
 	Vector2 m_CubeSize {};
+	Vector2 m_PlayerSpawnPosition {};
 
 	bool m_IsFinishedGeneratingBoundingBoxes {};
 
