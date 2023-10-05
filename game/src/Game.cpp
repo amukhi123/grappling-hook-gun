@@ -32,15 +32,19 @@ void Game::GameLoop() const
 	
 	gameObjects.push_back(std::make_shared<Environment>());
 
-	if (std::shared_ptr<Environment> environment {std::dynamic_pointer_cast<Environment>(gameObjects[static_cast<int>(GameProperties::GameObjects::Environment)])})
+	constexpr int environmentGameObjectLocation {static_cast<int>(GameProperties::GameObjects::Environment)};
+
+	if (const std::shared_ptr<const Environment> environment {std::dynamic_pointer_cast<Environment>(gameObjects[environmentGameObjectLocation])})
 	{
 		gameObjects.push_back(std::make_shared<Player>(environment->PlayerSpawnPosition(), environment->CubeSize(), environment->BoundingBoxes()));
 	
 		std::vector<std::shared_ptr<IBase>> userInterfaceObjects {};
 	
 		userInterfaceObjects.push_back(std::make_shared<Crosshair>());
-	
-		if (std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[static_cast<int>(GameProperties::GameObjects::Player)])})
+
+		constexpr int playerGameObjectLocation {static_cast<int>(GameProperties::GameObjects::Player)};
+
+		if (const std::shared_ptr<Player> player {std::dynamic_pointer_cast<Player>(gameObjects[playerGameObjectLocation])})
 		{
 			userInterfaceObjects.push_back(std::make_shared<PlayerDebugUserInterface>(player));
 
