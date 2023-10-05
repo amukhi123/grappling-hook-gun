@@ -33,4 +33,3 @@ Made using C++, raylib and git.
 
 [Cube Textures](https://piiixl.itch.io/textures)
 <br>[Crosshair](https://kenney-assets.itch.io/crosshair-pack)
-<br>[Music](https://opengameart.org/content/we-are-prophet-happy-energetic-tune)
